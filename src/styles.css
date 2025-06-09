@@ -1,0 +1,32 @@
+.container {
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.domino-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.domino {
+  border: 1px solid #000;
+  width: 30px;
+  margin: 5px;
+  text-align: center;
+  padding: 10px;
+}
+
+.buttons > button {
+  margin: 5px;
+  background-color: #8080ff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.buttons > button:hover {
+    background-color: #5a5aff;
+}
