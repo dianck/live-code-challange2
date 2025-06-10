@@ -1,114 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles.css";
 
-const defaultData = [
-  [6, 1],
-  [4, 3],
-  [5, 1],
-  [3, 4],
-  [1, 1],
-  [3, 4],
-  [1, 2],
-];
+const API_URL =
+  "https://www.random.org/strings/?num=10&len=32&upperalpha=on&unique=off&format=plain";
 
-const Domino = ({ card }) => (
-  <div className="domino">
-    <div>{card[0]}</div>
-    <div>-</div>
-    <div>{card[1]}</div>
-  </div>
-);
+export default function App() {
+  const [charCount, setCharCount] = useState({});
 
-function App() {
-  const [dominos, setDominos] = useState([...defaultData]);
-  const [removeTotal, setRemoveTotal] = useState("");
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(API_URL);
+      const text = await response.text();
+      const lines = text.trim().split("\n");
 
-  const doubleCount = dominos.filter(([a, b]) => a === b).length;
+      const combined = lines.join("");
+      const count = {};
 
-  const sortDominos = (order) => {
-    const sorted = [...dominos].sort((a, b) => {
-      const sumA = a[0] + a[1];
-      const sumB = b[0] + b[1];
-      if (sumA === sumB) return a[0] - b[0];
-      return order === "asc" ? sumA - sumB : sumB - sumA;
-    });
-    setDominos(sorted);
-  };
+      for (const char of combined) {
+        if (/^[A-Z]$/.test(char)) {
+          count[char] = (count[char] || 0) + 1;
+        }
+      }
 
-  const flip = () => {
-    setDominos(dominos.map(([a, b]) => [b, a]));
-  };
+      setCharCount(count);
+    };
 
-  const removeDup = () => {
-    const seen = new Set();
-    const unique = dominos.filter(([a, b]) => {
-      const key1 = `${a},${b}`;
-      const key2 = `${b},${a}`;
-      if (seen.has(key1) || seen.has(key2)) return false;
-      seen.add(key1);
-      seen.add(key2);
-      return true;
-    });
-    setDominos(unique);
-  };
+    fetchData();
+  }, []);
 
-  const removeByTotal = () => {
-    const total = parseInt(removeTotal);
-    if (!isNaN(total)) {
-      const filtered = dominos.filter(([a, b]) => a + b !== total);
-      setDominos(filtered);
-      setRemoveTotal("");
-    }
-  };
-
-  const reset = () => {
-    setDominos([...defaultData]);
-  };
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   return (
-    <div className="container">
-      <h2>Dominoes</h2>
-
-      <div>
-        <label>Source</label>
-        <pre>{JSON.stringify(dominos)}</pre>
-      </div>
-
-      <div>
-        <label>Double Numbers</label>
-        <div>{doubleCount}</div>
-      </div>
-
-      <div className="domino-container">
-        {dominos.map((card, index) => (
-          <Domino key={index} card={card} />
-        ))}
-      </div>
-
-      <div className="buttons">
-        <button onClick={() => sortDominos("asc")}>Sort (ASC)</button>
-        <button onClick={() => sortDominos("desc")}>Sort (DESC)</button>
-        <button onClick={flip}>Flip</button>
-        <button onClick={removeDup}>Remove Dup</button>
-        <button onClick={reset}>Reset</button>
-      </div>
-
-      <div>
-        <input
-          type="number"
-          placeholder="Input Total"
-          value={removeTotal}
-          onChange={(e) => setRemoveTotal(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") removeByTotal();
-          }}
-        />
-        <div className="buttons">
-          <button onClick={removeByTotal}>Remove</button>
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="border border-black p-6 text-center">
+        <h1 className="text-2xl font-bold mb-6">Hello Purwadhika Student !</h1>
+        <div className="flex flex-col items-center text-lg font-medium">
+          {alphabet.map((letter) => (
+            <div key={letter}>
+              {letter} : {charCount[letter] || 0}
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 }
-
-export default App;
