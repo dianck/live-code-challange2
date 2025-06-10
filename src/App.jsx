@@ -35,11 +35,16 @@ export default function App() {
       <div className="border border-black p-6 text-center">
         <h1 className="text-2xl font-bold mb-6">Hello Purwadhika Student !</h1>
         <div className="flex flex-col items-center text-lg font-medium">
-          {alphabet.map((letter) => (
-            <div key={letter}>
-              {letter} : {charCount[letter] || 0}
-            </div>
-          ))}
+          {alphabet.map((letter) => {
+            const count = charCount[letter] || 0;
+            const isEven = count % 2 === 0;
+
+            return (
+              <div key={letter} style={{ color: isEven ? "red" : "black" }}>
+                {letter} : {count}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
